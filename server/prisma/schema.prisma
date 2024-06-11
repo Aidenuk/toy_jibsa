@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  email String @unique
+  username String @unique
+  password String 
+  avatar String?
+  cratedAt DateTime @default(now())
+  posts Post[]
+  savePosts savedPost[]
+  todo Todo[]
+}
+
+model Post{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  price Int
+  images String[]
+  address String
+  city String
+  bedroom Int
+  bathroom Int
+  latitude String
+  longitude String
+  type Type
+  property Property
+  cratedAt DateTime @default(now())
+  user User @relation(fields: [userId],references: [id])
+  userId String @db.ObjectId
+  postDetail PostDetail?
+  savePosts savedPost[]
+
+}
+
+enum Type{
+  buy
+  rent
+}
+
+enum Property{
+  apartment
+  house
+  condoe
+  land
+}
+
+model PostDetail{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  desc String
+  utilities String?
+  pet String?
+  income String?
+  size Int?
+  school Int?
+  bus Int?
+  restaurant Int?
+  post Post @relation(fields: [postId],references: [id],onDelete:Cascade) //onDelete:Cascade 는 Post와 postDetail 모델 간의 관계에서 Post를 삭제할 때 Detail도 자동적으로 삭제되게 설정
+  postId String @db.ObjectId @unique
+
+
+}
+
+model savedPost{
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    user User @relation(fields: [userId],references: [id])
+    post Post @relation(fields: [postId],references: [id],onDelete:Cascade)
+    userId String @db.ObjectId @unique
+    postId String @db.ObjectId @unique
+    cratedAt DateTime @default(now())
+
+    @@unique([userId,postId]) // a user only can save one which is not allowed to be duplicated.
+
+
+}
+
+model Todo {
+  id     String  @id @default(auto()) @map("_id") @db.ObjectId
+  todo   String
+  status Boolean @default(false)
+  user User @relation(fields: [userId],references: [id])
+  userId String @db.ObjectId
+  createdAt DateTime @default(now())
+}
