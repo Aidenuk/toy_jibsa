@@ -1,18 +1,25 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Todo from "./todo";
-
+import "./todo.scss";
+import { AuthContext } from "../../context/AuthContext";
+import apiRequest from "../../lib/apiRequest";
 
 
 export default function TodoPage() {
   const [todos, setTodos] = useState([]);
   const [content, setContent] = useState("");
+  const {currentUser} = useContext(AuthContext)
 
   useEffect(() => {
     async function getTodos() {
-      const res = await fetch("/api/todos");
-      const todos = await res.json();
-
-      setTodos(todos);
+      try {
+        const res = await apiRequest.get("/todos");
+        const todos = res.data; // Correct the response handling
+        setTodos(todos);
+        
+      } catch (error) {
+        console.error("Failed to fetch todos:", error);
+      }
     }
     getTodos();
   }, []);
@@ -20,20 +27,28 @@ export default function TodoPage() {
   const createNewTodo = async (e) => {
     e.preventDefault();
     if (content.length > 3) {
-      const res = await fetch("/api/todos", {
-        method: "POST",
-        body: JSON.stringify({ todo: content }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const newTodo = await res.json();
+      try {
+        const res = await apiRequest.post(
+          "/todos",
+          {
+            todo: content,
+            userId: currentUser.id,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const newTodo = res.data;
 
-      setContent("");
-      setTodos([...todos, newTodo]);
+        setContent("");
+        setTodos([...todos, newTodo]);
+      } catch (error) {
+        console.error("Failed to create new todo:", error);
+      }
     }
-  }
-
+  };
   return (
     <main className="container">
       <h1 className="title">Awesome Todos</h1>

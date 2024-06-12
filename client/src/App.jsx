@@ -11,6 +11,7 @@ import Login from "./routes/login/login";
 import Register from "./routes/register/register";
 import ProfileUpdatePage from "./routes/profileUpdatePage/profileUpdatePage";
 import NewPostPage from "./routes/newPostPage/newPostPage";
+import TodoPage from "./routes/todo/todoPage";
 import { listPageLoader, singlePageLoader, profilePageLoader } from "./lib/loaders";
 
 function App() {
@@ -60,6 +61,10 @@ function App() {
         {
           path:"/add",
           element:<NewPostPage/>
+        },
+        {
+          path:"/todos",
+          element:<TodoPage/>
         },
 
       ]

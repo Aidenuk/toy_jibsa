@@ -7,16 +7,6 @@ function Navbar() {
   const [open, setOpen] = useState(false);
   const {currentUser} = useContext(AuthContext)
 
-
-  // const [user, setUser] = useState(null);
-
-  // useEffect(() => {
-  //   // 로컬 저장소에서 사용자 정보 읽기
-  //   const userData = JSON.parse(localStorage.getItem("user"));
-  //   setUser(userData);
-  // }, []);
-
-
   const loginUser = true;
   return (
     <nav>
@@ -43,6 +33,10 @@ function Navbar() {
             <Link to="/profile" className="profile">
               <div className="notification">3</div>
               <span>Profile</span>
+            </Link>
+            <Link to="/todos" className="todos">
+              
+              <span>Todo</span>
             </Link>
           </div>
         ) : (

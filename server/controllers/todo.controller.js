@@ -1,5 +1,4 @@
 import prisma from "../lib/prisma.js"
-import jwt from "jsonwebtoken";
 
 export const getTodos = async (req, res) => {
   const  userId = req.userId;
@@ -22,41 +21,6 @@ export const getTodos = async (req, res) => {
     res.status(500).json({ msg: "Failed to fetch todos" });
   }
 };
-// export const getTodos = async (req, res) => {
-//   const userId = req.params.userId;
- 
-//   try {
-//     // If id is provided, find specific todo
-//     if (userId) {
-//       const todo = await prisma.todo.findUnique({
-//         where: {
-//           id: id,
-//         },
-//       });
-//       if (!todo) {
-//         return res.status(404).json({ msg: "Todo not found" });
-//       }
-//       res.status(200).json(todo);
-//     } else {
-//       // If no id is provided, find all todos
-//       const todos = await prisma.todo.findMany();
-//       res.status(200).json(todos);
-//     }
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).json({ msg: "Failed to fetch todos" });
-//   }
-// };
-
-// export const getTodos = async (req, res) => {
-//   try {
-//     const todos = await prisma.todo.findMany();
-//     res.status(200).json(todos);
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).json({ msg: "Failed to fetch todos" });
-//   }
-// };
 
 // Post todos
 export const postTodo = async (req, res) => {
@@ -96,27 +60,20 @@ export const deleteTodo = async (req, res) => {
   }
 };
 
-// Update todos
 export const updateTodo = async (req, res) => {
   const { id } = req.params;
-  const { status, ...inputs } = req.body;
-
-  if (typeof status !== 'boolean') {
-    return res.status(400).json({ msg: "Invalid status" });
-  }
-
+  const {todo,status} = req.body
   try {
-    const todo = await prisma.todo.findUnique({
+    const existingTodo = await prisma.todo.findUnique({
       where: { id: id },
-    
     });
-    if(!todo){
-      return res.status(404).json({msg: "no todo !"})
+    if (!existingTodo) {
+      return res.status(404).json({ msg: "No todo found!" });
     }
 
     const updatedTodo = await prisma.todo.update({
       where: { id: id },
-      data: { ...inputs },
+      data: { status: status, todo: todo },
     });
     res.status(200).json(updatedTodo);
   } catch (error) {

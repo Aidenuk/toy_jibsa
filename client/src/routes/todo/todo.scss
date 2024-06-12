@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap');
+
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #cdb9de;
+  background-image: url("https://www.transparenttextures.com/patterns/cartographer.png");
+  color: white;
+  font-family: 'Rubik', sans-serif;
+  border-radius: 1rem;
+
+}
+
+/* todos list */
+
+.title {
+  text-align: center;
+  font-size: 3rem;
+  padding: 3rem 0 1rem;
+  
+}
+
+.todos {
+  border-radius: 1rem;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  background-color: #fdfcff;
+  color: white;
+  font-family: 'Rubik', sans-serif;
+  padding-top: 20px;
+}
+
+.todo {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  width: 50%;
+  font-size: 1.4rem;
+  border-radius: 1rem;
+  transition: all 0.2s;
+  background-color: #642699;
+  color: white;
+  font-family: 'Rubik', sans-serif;
+
+  &:hover {
+    background-color: rgba(172, 76, 76, 0.2);
+  }
+
+  .mutations {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .todo__status,
+  .todo__delete {
+    border: none;
+    padding: 0;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: none;
+    color: white;
+    font-size: 1.6rem;
+
+    &:hover {
+      transform: scale(1.15);
+    }
+  }
+
+  .todo__status {
+    font-size: 1.75rem;
+  }
+}
+
+/* form */
+.form {
+  display: flex;
+  gap: 0.5rem;
+  width: 50%;
+  margin: 1rem auto;
+
+  .form__input {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.25rem;
+    border: none;
+    outline: none;
+
+    &:focus,
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.85);
+    }
+  }
+
+  .form__button {
+    border: none;
+    background-color: rgba(113, 0, 212, 0.7);
+    cursor: pointer;
+    color: white;
+    border-radius: 0.25rem;
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: rgba(95, 0, 179, 0.5);
+    }
+  }
+}
+
+@media (max-width: 420px) {
+  .title {
+    font-size: 2.5rem;
+  }
+
+  .form {
+    width: 95%;
+  }
+
+  .todo {
+    width: 95%;
+    font-size: 1.2rem;
+  }
+}

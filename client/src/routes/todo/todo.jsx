@@ -1,54 +1,80 @@
+
+import { useState } from "react";
+import apiRequest from "../../lib/apiRequest";
+
 export default function Todo(props) {
   const { todo, setTodos } = props;
+  console.log(todo);
+  const todoId = todo.id;
+  const todoStatus = todo.status;
+  const todoTitle = todo.todo;
+  const [clickedEdit, setClickedEdit] = useState(false);
+  const [inputValue, setInputValue] = useState(todo.todo);
 
-  const updateTodo = async (todoId, todoStatus) => {
-      const res = await fetch(`/api/todos/${todoId}`, {
-          method: "PUT",
-          body: JSON.stringify({ status: todoStatus }),
-          headers: {
-              "Content-Type": "application/json"
-          },
-      });
 
-      const json = await res.json();
-      if (json.acknowledged) {
-          setTodos(currentTodos => {
-              return currentTodos.map((currentTodo) => {
-                  if (currentTodo._id === todoId) {
-                      return { ...currentTodo, status: !currentTodo.status };
-                  }
-                  return currentTodo;
-              });
-          });
-      }
+  const updateTodo = async () => {
+    
+    try {
+      const res = await apiRequest.put(
+        `/todos/${todoId}`,
+        {todo:inputValue, status:todoStatus},
+        
+      );
+      setTodos((prevTodos) =>
+        prevTodos.map((todo) =>
+          todo.id === todoId ? res.data : todo
+        )
+      );
+
+    } catch (error) {
+      console.error("Failed to update todo:", error);
+    }
+    
   };
 
-  const deleteTodo = async (todoId) => {
-      const res = await fetch(`/api/todos/${todoId}`, {
-          method: "DELETE"
-      });
-      const json = await res.json();
-      if (json.acknowledged) {
-          setTodos(currentTodos => {
-              return currentTodos
-              .filter((currentTodo) => (currentTodo._id !== todoId));
-          })
-      }
-  };
+  const handleUpdateTodo = () => {
+    updateTodo()
+    setClickedEdit(!clickedEdit);
+  }
 
+  const handleInputChange =(e) => {
+    setInputValue(e.target.value);
+  }
+    const deleteTodo = async (todoId) => {
+        try {
+        await apiRequest.delete(`/todos/${todoId}`);
+        setTodos((prevTodos) =>
+            prevTodos.filter((todo) => todo.id !== todoId)
+        );
+        } catch (err) {
+        console.error(err);
+        }
+    };
   return (
       <div className="todo">
-          <p>{todo.todo}</p>
+          {
+            clickedEdit? (
+                <>
+                <input
+                  type="text"
+                  defaultValue={todo.todo}
+                  onChange={handleInputChange}
+                />
+                </>
+            ) : (
+                <p>{todo.todo}</p>
+            )
+          }
           <div className="mutations">
               <button
                   className="todo__status"
-                  onClick={() => updateTodo(todo._id, todo.status)}
+                  onClick={handleUpdateTodo}
               >
-                  {(todo.status) ? "☑" : "☐"}
+                  {(todoStatus) ? "☑" : "☐"}
               </button>
               <button
                   className="todo__delete"
-                  onClick={() => deleteTodo(todo._id)}
+                  onClick={() => deleteTodo(todoId)}
               >
                   🗑️
               </button>
